@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+ <!--Quando o formulário é enviado, ele impede o envio padrão do formulário (para evitar o recarregamento da página), verifica cada campo de entrada no formulário e, se o campo estiver vazio, adiciona a classe CSS-->
+<!--Alterado o codigo para ele armazenar as informações do formulário no localStorage e limpar o formulário. -->
+<!--A função chamando a Updatetime a cada segundo para atualizar a hora exibida na página. -->
+<!--Quando a página é carregada, ele verifica a hora atual e aplica a classe CSS correspondente ao corpo para alterar o tema da página dependendo do horário do dia.-->
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Jogos - 7K Games</title>
+    <link rel="stylesheet" href="cadastrogames.css">
+</head>
+<body>
+    <div class="cadastro-container">
+        <h2>Cadastro de Jogo</h2>
+        <form class="cadastro-form" action="#">
+            <label for="nome">Nome do Jogo:</label>
+            <input type="text" id="nome" name="nome" required>
+
+            <label for="plataforma">Plataforma:</label>
+            <input type="text" id="plataforma" name="plataforma" required>
+
+            <label for="genero">Gênero:</label>
+            <input type="text" id="genero" name="genero" required>
+
+            <label for="preco">Preço:</label>
+            <input type="text" id="preco" name="preco" required>
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" name="descricao" required></textarea>
+
+            <label for="dataLancamento">Data de Lançamento:</label>
+            <input type="date" id="dataLancamento" name="dataLancamento" required>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+    <p id="time"></p>
+    <script>
+        document.querySelector('.cadastro-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var inputs = document.querySelectorAll('input');
+            var textarea = document.querySelector('textarea');
+            var game = {};
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].value === '') {
+                    inputs[i].classList.add('highlight');
+                } else {
+                    inputs[i].classList.remove('highlight');
+                    game[inputs[i].name] = inputs[i].value;
+                }
+            }
+            game[textarea.name] = textarea.value;
+            localStorage.setItem('game', JSON.stringify(game));
+            event.target.reset();
+        });
+
+        function updateTime() {
+            var date = new Date();
+            var time = date.toLocaleTimeString('pt-BR');
+            document.getElementById('time').textContent = "Hora atual: " + time;
+        }
+        setInterval(updateTime, 1000);
+
+        window.onload = function() {
+            var date = new Date();
+            var hour = date.getHours();
+
+            if (hour < 6) {
+                document.body.className = 'madrugada';
+            } else if (hour < 18) {
+                document.body.className = 'dia';
+            } else {
+                document.body.className = 'noite';
+            }
+        };
+    </script>
+</body>
+</html>
